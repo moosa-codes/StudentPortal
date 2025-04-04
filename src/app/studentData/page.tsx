@@ -3,7 +3,7 @@
 import { useStudentContext } from "@/Context/studentContext";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import styles from './StudentData.module.css';
+import styles from './studentData.module.css'
 import { useRouter } from "next/navigation";
 
 type FormData = {
