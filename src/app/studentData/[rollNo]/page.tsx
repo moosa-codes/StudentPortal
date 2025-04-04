@@ -43,7 +43,7 @@ const StudentDetails = () => {
                     <p className={styles.data}><strong className={styles.str}>Name:</strong> {student.name}</p>
                     <p className={styles.data}><strong className={styles.str}>Roll No:</strong> {student.rollNo}</p>
                     <p className={styles.data}><strong className={styles.str}>Class:</strong> {student.studentClass}</p>
-                    <p className={styles.data}><strong className={styles.str}>Father's Name:</strong> {student.fatherName}</p>
+                    <p className={styles.data}><strong className={styles.str}>Father&apos;s Name:</strong> {student.fatherName}</p>
                 </div>
             )}
         </div>
