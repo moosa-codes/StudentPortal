@@ -118,7 +118,7 @@ export default function CreateStudent() {
                         />
                     </label>
                     <label>
-                        Father's Name:
+                        Father$apos;s Name:
                         <input
                             type="text"
                             name="fatherName"

@@ -51,7 +51,7 @@ export default function Signup() {
             <button className={styles.button} onClick={loginHandler}>Sign Up</button>
             <br />
             <span>Already Have An Account?</span>
-            <Link href={'/signup'} className={styles.link}>Login</Link>
+            <Link href={'/login'} className={styles.link}>Login</Link>
         </div>
     );
 }

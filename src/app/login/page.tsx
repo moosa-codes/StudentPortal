@@ -50,7 +50,7 @@ export default function Login() {
             <br />
             <button className={styles.button} onClick={loginHandler}>Login</button>
             <br />
-            <span>Don't have an account?</span>
+            <span>Don&apos;t have an account?</span>
             <Link href={'/signup'} className={styles.link}>Sign up</Link>
 
         </div>
