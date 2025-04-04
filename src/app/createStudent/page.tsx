@@ -138,7 +138,7 @@ export default function CreateStudent() {
             {isSaved && <p className={styles.success}>Your Data has been saved.</p>}
 
             <Link href={'/studentData'} className={styles.listLink}>
-                See All students
+                See All Students
             </Link>
             {error && <p className={styles.error}>{error}</p>}
         </div>

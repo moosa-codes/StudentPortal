@@ -175,6 +175,14 @@
         font-size: 1rem;
     }
 
+    .listLink {
+        display: inline-block;
+        text-decoration: underline;
+        border: none;
+        padding: 30px;
+        letter-spacing: 2px;
+    }
+
     .input {
         width: 100%;
     }
