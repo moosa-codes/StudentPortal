@@ -1,174 +1,146 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react"
-import { useStudentContext } from "@/Context/studentContext";;
+import { useEffect, useState } from "react";
+import { useStudentContext } from "@/Context/studentContext";
+import styles from './createStudent.module.css';
 
 type FormData = {
     name: string;
-    rollNo: number | string;
+    rollNo: string;  // Keeping it string to allow user input, will convert later
     studentClass: string;
     fatherName: string;
-}
+};
 
 export default function CreateStudent() {
-
     const [isSaved, setIsSaved] = useState(false);
     const [showForm, setShowForm] = useState(false);
-    const [showLink, setShowLink] = useState(false);
-    const [error, setError] = useState<null | string>(null);
-    const { addStudents } = useStudentContext()
+    const [error, setError] = useState<string | null>(null);
+    const { addStudents } = useStudentContext();
 
-    const [form, setForm] =
-        useState<FormData>({
-            name: '',
-            rollNo: '',
-            studentClass: '',
-            fatherName: '',
-        });
-
-    const { name, rollNo, studentClass, fatherName } = form;
+    const [form, setForm] = useState<FormData>({
+        name: '',
+        rollNo: '',
+        studentClass: '',
+        fatherName: '',
+    });
 
 
-    const onChangeStatus = (e: any) => {
+    const onChangeStatus = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        setForm({
-            ...form,
-            [name]: value
-        }
-        )
-        setError('');
-    }
+        setForm((prev) => ({ ...prev, [name]: value }));
+        setError(null);
+    };
 
-    const btnHandler = () => {
-        setShowForm(!showForm);
-        setForm({ name, rollNo, studentClass, fatherName })
-        setError('');
-    }
+    // form toggler
+    const toggleForm = () => {
+        setShowForm((prev) => !prev);
+        setError(null);
+    };
 
+    // form submit and save to local storage
     const saveBtnHandler = () => {
-        if (name === '' || isNaN(Number(rollNo)) || rollNo === "") {
-            setError('Fill Your Requirements or Enter correct data .');
-        } else {
-            addStudents({
-                name,
-                rollNo: Number(rollNo),
-                studentClass,
-                fatherName,
-            })
-            setShowForm(false);
-            setIsSaved(true);
-            setShowLink(true);
-            setError('');
-            setTimeout(() => {
-                setIsSaved(false);
-            }, 3000);
-            setForm({
-                name: "",
-                rollNo: "",
-                studentClass: "",
-                fatherName: ""
-            })
+        const { name, rollNo, studentClass, fatherName } = form;
+
+        if (!name.trim() || !studentClass.trim() || !fatherName.trim()) {
+            setError("All fields are required.");
+            return;
         }
-    }
+
+        if (!rollNo.trim() || isNaN(Number(rollNo))) {
+            setError("Enter a valid roll number.");
+            return;
+        }
+
+        const newStudent = { name, rollNo: Number(rollNo), studentClass, fatherName };
+
+        // get students
+        const savedStudents = localStorage.getItem("students");
+        const students = savedStudents ? JSON.parse(savedStudents) : [];
+
+        // store students in local storage
+        students.push(newStudent);
+        localStorage.setItem("students", JSON.stringify(students));
+        addStudents(newStudent);
+
+        // Reset form & show success message
+        setIsSaved(true);
+        setShowForm(false);
+        setError(null);
+
+        setTimeout(() => setIsSaved(false), 3000);
+
+        setForm({ name: "", rollNo: "", studentClass: "", fatherName: "" });
+    };
 
     return (
-        <>
-            <p style={{ fontFamily: 'fantasy', fontSize: '25px' }}>Create Your Student Here...</p>
-            <button onClick={btnHandler}
-                style={{
-                    backgroundColor: '#4ea6e0', width: '200px', height: '45px'
-                    , color: '#fff', fontSize: '1.2rem', fontFamily: 'monospace', border: 'none',
-                    borderRadius: '5px', cursor: 'pointer'
-                }}>
-                Add Student</button>
+        <div className={styles.container}>
+            <p className={styles.heading}>Create Your Student Here...</p>
+
+            <button onClick={toggleForm} className={styles.addButton}>
+                {showForm ? "Close Form" : "Add Student"}
+            </button>
+
             {showForm && (
-                <>
-                    <form
-                        style={{
-                            display: 'flex', marginTop: '40px', border: '3px solid #212122',
-                            flexDirection: 'column', width: '200px', padding: '20px', justifyContent: 'space-between',
-                            alignItems: 'center', backgroundColor: 'lightgray', borderRadius: '10px'
-                        }}>
-                        <h3>Fill The Requirements</h3>
-                        <label>Name :
-                            <input
-                                type="text"
-                                name="name"
-                                value={name}
-                                onChange={onChangeStatus}
-                                placeholder="Student Name"
-                                style={{
-                                    width: '200px', height: '30px', textAlign: "start",
-                                    border: 'none', borderRadius: "5px", fontSize: '15px',
-                                    marginTop: '5px'
-                                }}
-                            />
-                        </label>
-                        <br />
-                        <label>Roll No:
-                            <input
-                                type="text"
-                                name="rollNo"
-                                value={rollNo}
-                                onChange={onChangeStatus}
-                                placeholder="Student roll no"
-                                style={{
-                                    width: '200px', height: '30px', textAlign: "start",
-                                    border: 'none', borderRadius: "5px", fontSize: '15px',
-                                    marginTop: '5px'
-                                }}
-                            />
-                        </label><br />
-                        <label>Class :
-                            <input
-                                type="text"
-                                name="studentClass"
-                                value={studentClass}
-                                onChange={onChangeStatus}
-                                placeholder="Student class"
-                                style={{
-                                    width: '200px', height: '30px', textAlign: "start",
-                                    border: 'none', borderRadius: "5px", fontSize: '15px',
-                                    marginTop: '5px'
-                                }}
-                            />
-                        </label><br />
-                        <label>Father's Name :
-                            <input
-                                type="text"
-                                name="fatherName"
-                                value={fatherName}
-                                onChange={onChangeStatus}
-                                placeholder="father's Name"
-                                style={{
-                                    width: '200px', height: '30px', textAlign: "start",
-                                    border: 'none', borderRadius: "5px", fontSize: '15px',
-                                    marginTop: '5px'
-                                }}
-                            />
-                        </label>
-                    </form>
-                    <button
-                        onClick={saveBtnHandler}
-                        style={{
-                            width: '240px', height: '30px', marginTop: '20px',
-                            marginLeft: '2px', borderRadius: "5px", backgroundColor: "orange",
-                            fontSize: '1.1rem', border: 'none', color: '#fff', cursor: 'pointer'
-                        }}
-                    >Save</button>
-                </>
+                <form className={styles.form}>
+                    <h3>Fill The Requirements</h3>
+                    <label>
+                        Name:
+                        <input
+                            type="text"
+                            name="name"
+                            value={form.name}
+                            onChange={onChangeStatus}
+                            placeholder="Student Name"
+                            className={styles.input}
+                        />
+                    </label>
+                    <label>
+                        Roll No:
+                        <input
+                            type="text"
+                            name="rollNo"
+                            value={form.rollNo}
+                            onChange={onChangeStatus}
+                            placeholder="Student Roll No"
+                            className={styles.input}
+                        />
+                    </label>
+                    <label>
+                        Class:
+                        <input
+                            type="text"
+                            name="studentClass"
+                            value={form.studentClass}
+                            onChange={onChangeStatus}
+                            placeholder="Student Class"
+                            className={styles.input}
+                        />
+                    </label>
+                    <label>
+                        Father's Name:
+                        <input
+                            type="text"
+                            name="fatherName"
+                            value={form.fatherName}
+                            onChange={onChangeStatus}
+                            placeholder="Father's Name"
+                            className={styles.input}
+                        />
+                    </label>
+
+                    <button type="button" onClick={saveBtnHandler} className={styles.saveButton}>
+                        Save
+                    </button>
+                </form>
             )}
 
-            {isSaved && <p style={{ color: "green" }}>Your Data has been saved.</p>}
+            {isSaved && <p className={styles.success}>Your Data has been saved.</p>}
 
-            <br /><br />
-
-            {showLink && (
-                <Link href={"/studentData"}><abbr title="click here to see further details and edit">See Details</abbr></Link>
-            )}
-
-            {error && <p style={{ color: "red" }}>{error}</p>}
-        </>
-    )
+            <Link href={'/studentData'} className={styles.listLink}>
+                See All students
+            </Link>
+            {error && <p className={styles.error}>{error}</p>}
+        </div>
+    );
 }

@@ -4,7 +4,7 @@ import { useContext, createContext, ReactNode, useState } from "react";
 
 type StudentType = {
     name: string;
-    rollNo: number;
+    rollNo: number | string;
     studentClass: string;
     fatherName: string;
 }
